@@ -16043,7 +16043,7 @@
 			l = {
 				hasSelectionCapabilities: function (e) {
 					var t = e && e.nodeName && e.nodeName.toLowerCase();
-					return t && ("input" === t && "text" === e.type || "textarea" === t || "false" === e.contentEditable)
+					return t && ("input" === t && "text" === e.type || "textarea" === t || "true" === e.contentEditable)
 				},
 				getSelectionInformation: function () {
 					var e = s();
@@ -24902,7 +24902,7 @@
 					var o = t ? s.getNodeFromInstance(t) : window;
 					switch (e) {
 					case "topFocus":
-						(d(o) || "false" === o.contentEditable) && (v = o, m = t, g = null);
+						(d(o) || "true" === o.contentEditable) && (v = o, m = t, g = null);
 						break;
 					case "topBlur":
 						v = null,
