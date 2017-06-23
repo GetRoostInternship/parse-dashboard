@@ -69,50 +69,6 @@ let BrowserToolbar = ({
     }
   }
   let menu = null;
-  if (relation) {
-    menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' disabled={true}>
-        <MenuItem
-          text={`Create ${relation.targetClassName} and attach`}
-          onClick={onAddRow}
-        />
-        <MenuItem
-          text="Attach existing row"
-          onClick={onAttachRows}
-        />
-        <Separator />
-        <MenuItem
-          disabled={selectionLength === 0}
-          text={selectionLength === 1 && !selection['*'] ? 'Detach this row' : 'Detach these rows'}
-          onClick={() => onDeleteRows(selection)}
-        />
-      </BrowserMenu>
-    );
-  } else {
-    menu = (
-      <BrowserMenu title='Edit' icon='edit-solid' disabled={true}>
-        <MenuItem text='Add a row' onClick={onAddRow} />
-        <MenuItem text='Add a column' onClick={onAddColumn} />
-        <MenuItem text='Add a class' onClick={onAddClass} />
-        <Separator />
-        <MenuItem
-          disabled={!selectionLength}
-          text={`Attach ${selectionLength <= 1 ? 'this row' : 'these rows'} to relation`}
-          onClick={onAttachSelectedRows}
-        />
-        <Separator />
-        <MenuItem
-          disabled={selectionLength === 0}
-          text={selectionLength === 1 && !selection['*'] ? 'Delete this row' : 'Delete these rows'}
-          onClick={() => onDeleteRows(selection)} />
-        <MenuItem text='Delete a column' onClick={onRemoveColumn} />
-        {enableDeleteAllRows ? <MenuItem text='Delete all rows' onClick={() => onDeleteRows({ '*': true })} /> : <noscript />}
-        <MenuItem text='Delete this class' onClick={onDropClass} />
-        {enableExportClass ? <Separator /> : <noscript />}
-        {enableExportClass ? <MenuItem text='Export this data' onClick={onExport} /> : <noscript />}
-      </BrowserMenu>
-    );
-  }
 
   let subsection = className;
   if (relation) {
@@ -146,7 +102,7 @@ let BrowserToolbar = ({
         className={classNameForPermissionsEditor}
         onChangeCLP={onChangeCLP}
         userPointers={userPointers} /> : <noscript />}
-      {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript/>}
+      {enableSecurityDialog ? <noscript/> : <noscript/>}
       {menu}
     </Toolbar>
   );
