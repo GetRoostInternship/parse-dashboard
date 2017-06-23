@@ -8,7 +8,7 @@
 import BrowserCell            from 'components/BrowserCell/BrowserCell.react';
 import * as browserUtils      from 'lib/browserUtils';
 import DataBrowserHeaderBar   from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.react';
-import Editor                 from 'dashboard/Data/Browser/Editor.react';
+//import Editor                 from 'dashboard/Data/Browser/Editor.react';
 import EmptyState             from 'components/EmptyState/EmptyState.react';
 import Icon                   from 'components/Icon/Icon.react';
 import Parse                  from 'parse';
@@ -212,62 +212,10 @@ export default class BrowserTable extends React.Component {
           for (let i = 0; i < this.props.current.col; i++) {
             wrapLeft += this.props.order[i].width;
           }
-
-          editor = (
-            <Editor
-              top={wrapTop}
-              left={wrapLeft}
-              type={type}
-              targetClass={targetClass}
-              value={value}
-              readonly={readonly}
-              width={width}
-              onCommit={(newValue) => {
-                if (newValue !== value) {
-                  this.props.updateRow(
-                    this.props.current.row,
-                    name,
-                    newValue
-                  );
-                }
-                this.props.setEditing(false);
-              }} />
-          );
         }
       }
 
       let addRow = null;
-      if (!this.props.newObject) {
-        if (this.props.relation) {
-          addRow = (
-            <div className={styles.addRow}>
-              <Button
-                onClick={this.props.onAddRow}
-                primary
-                value={`Create a ${this.props.relation.targetClassName} and attach`}
-              />
-              {' '}
-              <Button
-                onClick={this.props.onAttachRows}
-                primary
-                value={`Attach existing rows from ${this.props.relation.targetClassName}`}
-              />
-            </div>
-          );
-        } else {
-          addRow = (
-            <div className={styles.addRow}>
-              <a title='Add Row' onClick={this.props.onAddRow}>
-                <Icon
-                  name='plus-outline'
-                  width={14}
-                  height={14}
-                />
-              </a>
-            </div>
-          );
-        }
-      }
 
       if (this.props.newObject || this.props.data.length > 0) {
         table = (

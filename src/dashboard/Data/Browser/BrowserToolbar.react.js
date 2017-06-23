@@ -71,7 +71,7 @@ let BrowserToolbar = ({
   let menu = null;
   if (relation) {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={true}>
         <MenuItem
           text={`Create ${relation.targetClassName} and attach`}
           onClick={onAddRow}
@@ -90,7 +90,7 @@ let BrowserToolbar = ({
     );
   } else {
     menu = (
-      <BrowserMenu title='Edit' icon='edit-solid'>
+      <BrowserMenu title='Edit' icon='edit-solid' disabled={true}>
         <MenuItem text='Add a row' onClick={onAddRow} />
         <MenuItem text='Add a column' onClick={onAddColumn} />
         <MenuItem text='Add a class' onClick={onAddClass} />
@@ -128,11 +128,6 @@ let BrowserToolbar = ({
       subsection={subsection}
       details={details.join(' \u2022 ')}
     >
-      <a className={styles.toolbarButton} onClick={onAddRow}>
-        <Icon name='plus-solid' width={14} height={14} />
-        <span>Add Row</span>
-      </a>
-      <div className={styles.toolbarSeparator} />
       <a className={styles.toolbarButton} onClick={onRefresh}>
         <Icon name='refresh-solid' width={14} height={14} />
         <span>Refresh</span>
