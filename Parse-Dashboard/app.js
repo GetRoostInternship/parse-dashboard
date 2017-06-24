@@ -77,6 +77,7 @@ module.exports = function(config, allowInsecureHTTP) {
     app.get('/parse-dashboard-config.json', function(req, res) {
       let response = {
         apps: config.apps,
+        readOnlyApps: config.apps,
         newFeaturesInLatestVersion: newFeaturesInLatestVersion,
       };
 
