@@ -78,6 +78,7 @@ function initialize(app) {
  */
 function authenticate(userToTest, usernameOnly) {
   var appsUserHasAccessTo = null;
+  var appsUserHasReadAccessTo = null;
   var matchingUsername = null;
 
   //they provided auth
@@ -94,6 +95,7 @@ function authenticate(userToTest, usernameOnly) {
         matchingUsername = user.user;
         // User restricted apps
         appsUserHasAccessTo = user.apps || null;
+		appsUserHasReadAccessTo = user.readOnlyApps || null;
       }
 
       return isAuthenticated;
@@ -102,7 +104,8 @@ function authenticate(userToTest, usernameOnly) {
   return {
     isAuthenticated,
     matchingUsername,
-    appsUserHasAccessTo
+    appsUserHasAccessTo,
+	appsUserHasReadAccessTo
   };
 }
 
