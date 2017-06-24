@@ -1,10 +1,48 @@
 {
-  "apps": [{
+  "apps": [
+    {
     "serverURL": "http://localhost:1337/parse",
     "appId": "test_appId",
     "masterKey": "test_masterKey",
     "appName": "TestApp",
     "iconName": ""
-  }],
-  "iconsFolder": "icons"
+  },
+  {
+    "serverURL": "http://localhost:1337/parse",
+    "appId": "test_app2Id",
+    "masterKey": "test_masterKey2",
+    "appName": "TestApp2",
+  }
+],
+  "users": [
+    {
+    "user":"nakul",
+    "pass":"asdf123",
+    "apps":[{"appId":"test_appId"}],
+    "readOnlyApps":[{"appId":"test_app2Id"}]
+  },
+  {
+  "user":"erik",
+  "pass":"asdf1234",
+  "apps":[{"appId":"test_app2Id"}],
+  "readOnlyApps":[{"appId":"test_appId"}]
+  }
+  ,
+  {
+  "user":"jonathan",
+  "pass":"asdf12345",
+  "apps":[{"appId":"test_app2Id"}],
+  "readOnlyApps":[{"appId":"test_appId"}]
+  }
+  ,
+  ,
+  {
+  "user":"pujan",
+  "pass":"asdf123456",
+  "apps":[{"appId":"test_appId"}],
+  "readOnlyApps":[{"appId":"test_app2Id"}]
+  }
+
+  ]
 }
+
