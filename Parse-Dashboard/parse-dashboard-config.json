@@ -4,14 +4,13 @@
     "serverURL": "http://localhost:1337/parse",
     "appId": "test_appId",
     "masterKey": "test_masterKey",
-    "appName": "TestApp",
-    "iconName": ""
+    "appName": "TestApp"
   },
   {
     "serverURL": "http://localhost:1337/parse",
     "appId": "test_app2Id",
     "masterKey": "test_masterKey2",
-    "appName": "TestApp2",
+    "appName": "TestApp2"
   }
 ],
   "users": [
@@ -34,7 +33,6 @@
   "apps":[{"appId":"test_app2Id"}],
   "readOnlyApps":[{"appId":"test_appId"}]
   }
-  ,
   ,
   {
   "user":"pujan",
