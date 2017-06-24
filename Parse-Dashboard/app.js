@@ -100,6 +100,7 @@ module.exports = function(config, allowInsecureHTTP) {
 
       const successfulAuth = authentication && authentication.isAuthenticated;
       const appsUserHasAccess = authentication && authentication.appsUserHasAccessTo;
+	  const appsUserHasReadAccess = authentication && authentication.appsUserHasReadAccessTo;
 
       if (successfulAuth) {
         if (appsUserHasAccess) {
@@ -111,6 +112,14 @@ module.exports = function(config, allowInsecureHTTP) {
             })
           });
         }
+		if (appsUserHasReadAccess) {
+			// Allow read-only access to apps defined in user dictionary
+			response.readOnlyApps = response.readOnlyApps.filter(function (app) {
+				return appsUserHasReadAccess.find(appUserHasReadAccess => {
+					return app.appId == appUserHasReadAccess.appId
+				})
+			})
+		}
         // They provided correct auth
         return res.json(response);
       }
