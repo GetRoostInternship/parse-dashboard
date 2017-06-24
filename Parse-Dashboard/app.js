@@ -119,7 +119,7 @@ module.exports = function(config, allowInsecureHTTP) {
 				return appsUserHasReadAccess.find(appUserHasReadAccess => {
 					return app.appId == appUserHasReadAccess.appId
 				})
-			})
+			});
 		}
         // They provided correct auth
         return res.json(response);
