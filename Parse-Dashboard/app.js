@@ -114,7 +114,7 @@ module.exports = function(config, allowInsecureHTTP) {
         }
 		if (appsUserHasReadAccess) {
 			// Allow read-only access to apps defined in user dictionary
-			response.readOnlyApps = response.readOnlyApps.filter(function (app) {
+			response.readOnlyApps = response.apps.filter(function (app) {
 				return appsUserHasReadAccess.find(appUserHasReadAccess => {
 					return app.appId == appUserHasReadAccess.appId
 				})
