@@ -77,7 +77,7 @@ module.exports = function(config, allowInsecureHTTP) {
     app.get('/parse-dashboard-config.json', function(req, res) {
       let response = {
         apps: config.apps,
-        readOnlyApps: config.apps,
+				readOnlyApps: config.apps,
         newFeaturesInLatestVersion: newFeaturesInLatestVersion,
       };
 
@@ -107,6 +107,7 @@ module.exports = function(config, allowInsecureHTTP) {
         if (appsUserHasAccess) {
           // Restric access to apps defined in user dictionary
           // If they didn't supply any app id, user will access all apps
+		  
           response.apps = response.apps.filter(function (app) {
             return appsUserHasAccess.find(appUserHasAccess => {
               return app.appId == appUserHasAccess.appId
@@ -115,7 +116,7 @@ module.exports = function(config, allowInsecureHTTP) {
         }
 		if (appsUserHasReadAccess) {
 			// Allow read-only access to apps defined in user dictionary
-			response.readOnlyApps = response.apps.filter(function (app) {
+			response.readOnlyApps = response.readOnlyApps.filter(function (app) {
 				return appsUserHasReadAccess.find(appUserHasReadAccess => {
 					return app.appId == appUserHasReadAccess.appId
 				})
