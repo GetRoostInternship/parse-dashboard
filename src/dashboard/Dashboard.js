@@ -118,8 +118,10 @@ class Dashboard extends React.Component {
     setBasePath(props.path);
   }
 
+  
+  
   componentDidMount() {
-    get('/parse-dashboard-config.json').then(({ apps, newFeaturesInLatestVersion = [] }) => {
+    get('/parse-dashboard-config.json').then(({ apps, readOnlyApps, newFeaturesInLatestVersion = [] }) => {
       this.setState({ newFeaturesInLatestVersion });
       let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
@@ -163,11 +165,58 @@ class Dashboard extends React.Component {
           });
         }
       });
-      return Parse.Promise.when(appInfoPromises);
-    }).then(function(resolvedApps) {
+			
+			let readOnlyAppInfoPromises = readOnlyapps.map(app => {
+        if (app.serverURL.startsWith('https://api.parse.com/1')) {
+          //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
+          //it supports and can hard code them
+          app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
+          return Parse.Promise.as(app);
+        } else {
+          app.serverInfo = {}
+          return new ParseApp(app).apiRequest(
+            'GET',
+            'serverInfo',
+            {},
+            { useMasterKey: true }
+          ).then(serverInfo => {
+            app.serverInfo = serverInfo;
+            return app;
+          }, error => {
+            if (error.code === 100) {
+              app.serverInfo = {
+                error: 'unable to connect to server',
+                enabledFeatures: {},
+                parseServerVersion: "unknown"
+              }
+              return Parse.Promise.as(app);
+            } else if (error.code === 107) {
+              app.serverInfo = {
+                error: 'server version too low',
+                enabledFeatures: {},
+                parseServerVersion: "unknown"
+              }
+              return Parse.Promise.as(app);
+            } else {
+              app.serverInfo = {
+                error: error.message || 'unknown error',
+                enabledFeatures: {},
+                parseServerVersion: "unknown"
+              }
+              return Parse.Promise.as(app);
+            }
+          });
+        }
+      });
+			
+      return Parse.Promise.when(appInfoPromises, readOnlyAppInfoPromises);
+    }).then(function(resolvedApps, resolvedReadOnlyApps) {
       resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
+			resolvedReadOnlyApps.forEach(app => {
+				AppsManager.addReadOnlyApp(app);
+			});
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({

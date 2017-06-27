@@ -10,11 +10,23 @@ import ParseApp           from 'lib/ParseApp';
 import { post, del } from 'lib/AJAX';
 
 let appsStore = [];
+let readOnlyAppsStore = [];
 
 const AppsManager = {
   addApp(raw) {
-    appsStore.push(new ParseApp(raw));
+    appsStore.push(new ParseApp(false, raw));
   },
+  
+  addReadOnlyApp(raw) {
+		readOnlyAppsStore.push(new ParseApp(true, raw));
+  },
+	
+	readOnlyApps() {
+		readOnlyAppsStore.sort(function(app1, app2) {
+      return app1.name.localeCompare(app2.name);
+    });
+		return readOnlyAppsStore;
+	},
 
   apps() {
     appsStore.sort(function(app1, app2) {

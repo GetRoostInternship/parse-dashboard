@@ -119,6 +119,7 @@ export default class AppsIndex extends React.Component {
   render() {
     let search = this.state.search.toLowerCase();
     let apps = AppsManager.apps();
+		let readOnlyApps = AppsManager.readOnlyApps();
     if (apps.length === 0) {
       return (
         <div className={styles.empty}>
@@ -153,6 +154,16 @@ export default class AppsIndex extends React.Component {
         </div>
         <ul className={styles.apps}>
           {apps.map(app =>
+            app.name.toLowerCase().indexOf(search) > -1 ?
+              <AppCard key={app.slug} app={app} icon={app.icon ? app.icon : null}/> :
+              null
+          )}
+        </ul>
+				<div className={styles.header}>
+				Read Only Apps:
+				</div>
+				<ul className={styles.apps}>
+          {readOnlyApps.map(app =>
             app.name.toLowerCase().indexOf(search) > -1 ?
               <AppCard key={app.slug} app={app} icon={app.icon ? app.icon : null}/> :
               null
