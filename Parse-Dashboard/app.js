@@ -101,7 +101,7 @@ module.exports = function(config, allowInsecureHTTP) {
 
       const successfulAuth = authentication && authentication.isAuthenticated;
       const appsUserHasAccess = authentication && authentication.appsUserHasAccessTo;
-	  const appsUserHasReadAccess = authentication && authentication.appsUserHasReadAccessTo;
+	    const appsUserHasReadAccess = authentication && authentication.appsUserHasReadAccessTo;
 
       if (successfulAuth) {
         if (appsUserHasAccess) {
