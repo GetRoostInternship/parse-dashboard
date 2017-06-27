@@ -120,7 +120,7 @@ export default class AppsIndex extends React.Component {
     let search = this.state.search.toLowerCase();
     let apps = AppsManager.apps();
 		let readOnlyApps = AppsManager.readOnlyApps();
-    if (apps.length === 0) {
+    if (apps.length === 0 && readOnlyApps.length === 0) {
       return (
         <div className={styles.empty}>
           <div className={center}>
