@@ -22,7 +22,7 @@ function setEnablePushSource(setting, enable) {
 }
 
 export default class ParseApp {
-  constructor({
+  constructor(readOnly, {
     appName,
     created_at,
     clientKey,
@@ -40,6 +40,7 @@ export default class ParseApp {
     production,
     iconName,
   }) {
+    this.readOnly = readOnly;
     this.name = appName;
     this.createdAt = created_at ? new Date(created_at) : new Date();
     this.applicationId = appId;
