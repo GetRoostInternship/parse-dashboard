@@ -123,8 +123,6 @@ class Dashboard extends React.Component {
   componentDidMount() {
     get('/parse-dashboard-config.json').then(({ apps, readOnlyApps, newFeaturesInLatestVersion = [] }) => {
       this.setState({ newFeaturesInLatestVersion });
-			console.log('apps', apps);
-			console.log('readOnlyApps', readOnlyApps);
       let appInfoPromises = apps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
@@ -133,7 +131,7 @@ class Dashboard extends React.Component {
           return Parse.Promise.as(app);
         } else {
           app.serverInfo = {}
-          return new ParseApp(app).apiRequest(
+          return new ParseApp(false, app).apiRequest(
             'GET',
             'serverInfo',
             {},
@@ -168,7 +166,7 @@ class Dashboard extends React.Component {
         }
       });
 			
-			let readOnlyAppInfoPromises = readOnlyapps.map(app => {
+			let readOnlyAppInfoPromises = readOnlyApps.map(app => {
         if (app.serverURL.startsWith('https://api.parse.com/1')) {
           //api.parse.com doesn't have feature availability endpoint, fortunately we know which features
           //it supports and can hard code them
@@ -176,7 +174,7 @@ class Dashboard extends React.Component {
           return Parse.Promise.as(app);
         } else {
           app.serverInfo = {}
-          return new ParseApp(app).apiRequest(
+          return new ParseApp(true, app).apiRequest(
             'GET',
             'serverInfo',
             {},
