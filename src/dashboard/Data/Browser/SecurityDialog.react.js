@@ -48,7 +48,8 @@ export default class SecurityDialog extends React.Component {
   render() {
     let dialog = null;
     let parseServerSupportsPointerPermissions = this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions;
-    if (this.props.perms && this.state.open) {
+    console.log("hi" + this.context.currentApp);
+    if (this.props.perms && this.state.open&&this.context.currentApp.readOnly == false) {
       dialog = (
         <PermissionsDialog
           title='Edit Class Level Permissions'
@@ -70,7 +71,7 @@ export default class SecurityDialog extends React.Component {
       classes.push(styles.toolbarButtonDisabled);
     }
     let onClick = null;
-    if (!this.props.disabled) {
+    if (!this.props.disabled&&this.context.currentApp.readOnly==false) {
       onClick = () => {
         this.setState({ open: true });
         this.props.setCurrent(null);
