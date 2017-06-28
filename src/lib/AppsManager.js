@@ -15,12 +15,13 @@ let readOnlyAppsStore = [];
 const AppsManager = {
   addApp(raw) {
     appsStore.push(new ParseApp(false, raw));
+    console.log("new regular app from appsmanager");
   },
-  
+
   addReadOnlyApp(raw) {
 		readOnlyAppsStore.push(new ParseApp(true, raw));
   },
-	
+
 	readOnlyApps() {
 		readOnlyAppsStore.sort(function(app1, app2) {
       return app1.name.localeCompare(app2.name);
@@ -73,6 +74,15 @@ const AppsManager = {
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
     return Parse.Promise.when(this.apps().map(app => {
+      return Parse.Promise.when(
+        app.getClassCount('_Installation').then(count => app.installations = count),
+        app.getClassCount('_User').then(count => app.users = count)
+      );
+    }));
+  },
+
+  getAllReadOnlyAppsIndexStats() {
+    return Parse.Promise.when(this.readOnlyApps().map(app => {
       return Parse.Promise.when(
         app.getClassCount('_Installation').then(count => app.installations = count),
         app.getClassCount('_User').then(count => app.users = count)
