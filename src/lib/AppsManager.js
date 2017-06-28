@@ -43,6 +43,12 @@ const AppsManager = {
         return apps[i];
       }
     }
+    let readOnlyApps = this.readOnlyApps();
+    for (let i = readOnlyApps.length; i--;) {
+      if (readOnlyApps[i].slug === slugOrName || readOnlyApps[i].name === slugOrName) {
+        return readOnlyApps[i];
+      }
+    }
     return null;
   },
 
@@ -54,7 +60,7 @@ const AppsManager = {
       payload.parse_app.connectionString = connectionURL;
     }
     return post('/apps', payload).then((response) => {
-      let newApp = new ParseApp(response.app);
+      let newApp = new ParseApp(false, response.app);
       appsStore.push(newApp);
       return newApp;
     });
@@ -65,6 +71,12 @@ const AppsManager = {
       for (let i = 0; i < appsStore.length; i++) {
         if (appsStore[i].slug == slug) {
           appsStore.splice(i, 1);
+          return;
+        }
+      }
+      for (let i = 0; i < readOnlyAppsStore.length; i++) {
+        if (readOnlyAppsStore[i].slug == slug) {
+          readOnlyAppsStore.splice(i, 1);
           return;
         }
       }
@@ -117,7 +129,7 @@ const AppsManager = {
       if (!appsStore) {
         AppsManager.seed();
       }
-      appsStore.push(new ParseApp(app));
+      appsStore.push(new ParseApp(false, app));
     });
     return request;
   },
