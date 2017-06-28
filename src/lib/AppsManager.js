@@ -19,34 +19,40 @@ const AppsManager = {
   },
 
   addReadOnlyApp(raw) {
-		readOnlyAppsStore.push(new ParseApp(true, raw));
+		appsStore.push(new ParseApp(true, raw));
+		console.log("new read-only app from appsmanager");
   },
 
 	readOnlyApps() {
-		readOnlyAppsStore.sort(function(app1, app2) {
-	  return app1.name.localeCompare(app2.name);
-	});
+		let readOnlyAppsStore = appsStore.filter(function(app) {
+			return app.readOnly === true;
+		}).sort(function(app1, app2) {
+			return app1.name.localeCompare(app2.name);
+		});
 		return readOnlyAppsStore;
 	},
 
   apps() {
-    appsStore.sort(function(app1, app2) {
+		let fullAccessAppsStore = appsStore.filter(function(app) {
+			return app.readOnly === false;
+		}).sort(function(app1, app2) {
+      return app1.name.localeCompare(app2.name);
+    });
+    return fullAccessAppsStore;
+  },
+	
+	allApps() {
+		appsStore.sort(function(app1, app2) {
       return app1.name.localeCompare(app2.name);
     });
     return appsStore;
-  },
+	},
 
   findAppBySlugOrName(slugOrName) {
-    let apps = this.apps();
+    let apps = this.allApps();
     for (let i = apps.length; i--;) {
       if (apps[i].slug === slugOrName || apps[i].name === slugOrName) {
         return apps[i];
-      }
-    }
-    let readOnlyApps = this.readOnlyApps();
-    for (let i = readOnlyApps.length; i--;) {
-      if (readOnlyApps[i].slug === slugOrName || readOnlyApps[i].name === slugOrName) {
-        return readOnlyApps[i];
       }
     }
     return null;
@@ -74,27 +80,12 @@ const AppsManager = {
           return;
         }
       }
-      for (let i = 0; i < readOnlyAppsStore.length; i++) {
-        if (readOnlyAppsStore[i].slug == slug) {
-          readOnlyAppsStore.splice(i, 1);
-          return;
-        }
-      }
     });
   },
 
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
-    return Parse.Promise.when(this.apps().map(app => {
-      return Parse.Promise.when(
-        app.getClassCount('_Installation').then(count => app.installations = count),
-        app.getClassCount('_User').then(count => app.users = count)
-      );
-    }));
-  },
-
-  getAllReadOnlyAppsIndexStats() {
-    return Parse.Promise.when(this.readOnlyApps().map(app => {
+    return Parse.Promise.when(this.allApps().map(app => {
       return Parse.Promise.when(
         app.getClassCount('_Installation').then(count => app.installations = count),
         app.getClassCount('_User').then(count => app.users = count)
