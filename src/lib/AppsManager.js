@@ -19,21 +19,26 @@ const AppsManager = {
   },
 
   addReadOnlyApp(raw) {
-		readOnlyAppsStore.push(new ParseApp(true, raw));
+		appsStore.push(new ParseApp(true, raw));
+		console.log("new read-only app from appsmanager");
   },
 
 	readOnlyApps() {
-		readOnlyAppsStore.sort(function(app1, app2) {
-	  return app1.name.localeCompare(app2.name);
-	});
+		let readOnlyAppsStore = appsStore.filter(function(app) {
+			return app.readOnly === true;
+		}).sort(function(app1, app2) {
+			return app1.name.localeCompare(app2.name);
+		});
 		return readOnlyAppsStore;
 	},
 
   apps() {
-    appsStore.sort(function(app1, app2) {
+		let fullAccessAppsStore = appsStore.filter(function(app) {
+			return app.readOnly === false;
+		}).sort(function(app1, app2) {
       return app1.name.localeCompare(app2.name);
     });
-    return appsStore;
+    return fullAccessAppsStore;
   },
 
   findAppBySlugOrName(slugOrName) {
@@ -54,7 +59,7 @@ const AppsManager = {
       payload.parse_app.connectionString = connectionURL;
     }
     return post('/apps', payload).then((response) => {
-      let newApp = new ParseApp(response.app);
+      let newApp = new ParseApp(false, response.app);
       appsStore.push(newApp);
       return newApp;
     });
@@ -74,15 +79,6 @@ const AppsManager = {
   // Fetch the latest usage and request info for the apps index
   getAllAppsIndexStats() {
     return Parse.Promise.when(this.apps().map(app => {
-      return Parse.Promise.when(
-        app.getClassCount('_Installation').then(count => app.installations = count),
-        app.getClassCount('_User').then(count => app.users = count)
-      );
-    }));
-  },
-
-  getAllReadOnlyAppsIndexStats() {
-    return Parse.Promise.when(this.readOnlyApps().map(app => {
       return Parse.Promise.when(
         app.getClassCount('_Installation').then(count => app.installations = count),
         app.getClassCount('_User').then(count => app.users = count)
