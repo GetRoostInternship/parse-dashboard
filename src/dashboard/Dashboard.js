@@ -209,14 +209,14 @@ class Dashboard extends React.Component {
         }
       });
 			
-      return Parse.Promise.when([appInfoPromises, readOnlyAppInfoPromises]);
-    }).then(function(resolvedApps) {
-			console.log('resolvedApps: ', resolvedApps[0]);
-			console.log('resolvedReadOnlyApps: ', resolvedApps[1]);
-      resolvedApps[0].forEach(app => {
+      return Parse.Promise.when(appInfoPromises, readOnlyAppInfoPromises);
+    }).then(function(resolvedApps, resolvedReadOnlyApps) {
+			console.log('resolvedApps: ', resolvedApps);
+			console.log('resolvedReadOnlyApps: ', resolvedReadOnlyApps);
+      resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
-			resolvedApps[1].forEach(app => {
+			resolvedReadOnlyApps.forEach(app => {
 				AppsManager.addReadOnlyApp(app);
 			});
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });

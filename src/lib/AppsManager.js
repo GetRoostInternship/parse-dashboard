@@ -21,6 +21,7 @@ const AppsManager = {
   addReadOnlyApp(raw) {
 		appsStore.push(new ParseApp(true, raw));
 		console.log("new read-only app from appsmanager");
+		console.log(appsStore);
   },
 
 	readOnlyApps() {
