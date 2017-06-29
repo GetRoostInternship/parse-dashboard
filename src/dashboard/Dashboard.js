@@ -209,16 +209,16 @@ class Dashboard extends React.Component {
         }
       });
 			
-      return Parse.Promise.when(appInfoPromises, readOnlyAppInfoPromises);
-    }).then(function(resolvedApps, resolvedReadOnlyApps) {
+      return Parse.Promise.when(appInfoPromises);//, readOnlyAppInfoPromises);
+    }).then(function(resolvedApps){//, resolvedReadOnlyApps) {
 			console.log('resolvedApps: ', resolvedApps);
-			console.log('resolvedReadOnlyApps: ', resolvedReadOnlyApps);
+			//console.log('resolvedReadOnlyApps: ', resolvedReadOnlyApps);
       resolvedApps.forEach(app => {
         AppsManager.addApp(app);
       });
-			resolvedReadOnlyApps.forEach(app => {
+			/*resolvedReadOnlyApps.forEach(app => {
 				AppsManager.addReadOnlyApp(app);
-			});
+			});*/	
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({
