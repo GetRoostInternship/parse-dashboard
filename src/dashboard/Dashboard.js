@@ -214,6 +214,7 @@ class Dashboard extends React.Component {
 			
 			console.log('readonlyp', readOnlyAppInfoPromises);
 			
+      return Parse.Promise.when(appInfoPromises, readOnlyAppInfoPromises);
 			console.log('resolvedApps: ', resolvedApps);
 			console.log('resolvedReadOnlyApps: ', resolvedReadOnlyApps);
       resolvedApps.forEach(app => {
