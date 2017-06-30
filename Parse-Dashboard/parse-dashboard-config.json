@@ -7,7 +7,7 @@
     "appName": "TestApp"
   },
   {
-    "serverURL": "http://localhost:1337/parse",
+    "serverURL": "http://localhost:1338/parse",
     "appId": "test_app2Id",
     "masterKey": "test_masterKey2",
     "appName": "TestApp2"
