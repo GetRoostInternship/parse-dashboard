@@ -123,6 +123,7 @@ class Dashboard extends React.Component {
   componentDidMount() {
     get('/parse-dashboard-config.json').then(({ apps, readOnlyApps, newFeaturesInLatestVersion = [] }) => {
       this.setState({ newFeaturesInLatestVersion });
+<<<<<<< HEAD
 			var accessTypes = [apps, readOnlyApps];
       let appInfoPromises = accessTypes.map(type => {
 				type.map(app => {
@@ -195,6 +196,109 @@ class Dashboard extends React.Component {
 				console.log('readonlyapp', app);
 				AppsManager.addReadOnlyApp(app);
 			});*/
+=======
+      let appInfoPromises = apps.map(app => {
+				app.readOnly = false;
+				if (app.serverURL.startsWith('https://api.parse.com/1')) {
+					//api.parse.com doesn't have feature availability endpoint, fortunately we know which features
+					//it supports and can hard code them
+					app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
+					return Parse.Promise.as(app);
+				} else {
+					app.serverInfo = {};
+					return new ParseApp(app).apiRequest(
+						'GET',
+						'serverInfo',
+						{},
+						{ useMasterKey: true }
+					).then(serverInfo => {
+						console.log(serverInfo);
+						app.serverInfo = serverInfo;
+						return app;
+					}, error => {
+						if (error.code === 100) {
+							app.serverInfo = {
+								error: 'unable to connect to server',
+								enabledFeatures: {},
+								parseServerVersion: "unknown"
+							}
+							return Parse.Promise.as(app);
+						} else if (error.code === 107) {
+							app.serverInfo = {
+								error: 'server version too low',
+								enabledFeatures: {},
+								parseServerVersion: "unknown"
+							}
+							return Parse.Promise.as(app);
+						} else {
+							app.serverInfo = {
+								error: error.message || 'unknown error',
+								enabledFeatures: {},
+								parseServerVersion: "unknown"
+							}
+							return Parse.Promise.as(app);
+						}
+					});
+				}
+			});
+			
+			let readOnlyAppInfoPromises = readOnlyApps.map(app => {
+				app.readOnly = true;
+				if (app.serverURL.startsWith('https://api.parse.com/1')) {
+					//api.parse.com doesn't have feature availability endpoint, fortunately we know which features
+					//it supports and can hard code them
+					app.serverInfo = PARSE_DOT_COM_SERVER_INFO;
+					return Parse.Promise.as(app);
+				} else {
+					app.serverInfo = {};
+					return new ParseApp(app).apiRequest(
+						'GET',
+						'serverInfo',
+						{},
+						{ useMasterKey: true }
+					).then(serverInfo => {
+						console.log(serverInfo);
+						app.serverInfo = serverInfo;
+						return app;
+					}, error => {
+						if (error.code === 100) {
+							app.serverInfo = {
+								error: 'unable to connect to server',
+								enabledFeatures: {},
+								parseServerVersion: "unknown"
+							}
+							return Parse.Promise.as(app);
+						} else if (error.code === 107) {
+							app.serverInfo = {
+								error: 'server version too low',
+								enabledFeatures: {},
+								parseServerVersion: "unknown"
+							}
+							return Parse.Promise.as(app);
+						} else {
+							app.serverInfo = {
+								error: error.message || 'unknown error',
+								enabledFeatures: {},
+								parseServerVersion: "unknown"
+							}
+							return Parse.Promise.as(app);
+						}
+					});
+				}
+			});
+
+			var allAppInfoPromises = [appInfoPromises, readOnlyAppInfoPromises];
+			return Parse.Promise.when(allAppInfoPromises);
+    }).then(function(resolvedApps) {	
+      resolvedApps[0].forEach(app => {
+				console.log('app', app);
+        AppsManager.addApp(app);
+      });
+			resolvedApps[1].forEach(app => {
+				console.log('readonlyapp', app);
+				AppsManager.addApp(app);
+			});
+>>>>>>> aa10c10c126ad673b46adc878d417621a1604372
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({
@@ -203,7 +307,7 @@ class Dashboard extends React.Component {
       });
     });
   }
-
+	
   render() {
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
       return <div className={center}><Loader/></div>;
