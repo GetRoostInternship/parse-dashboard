@@ -14,20 +14,15 @@ let readOnlyAppsStore = [];
 
 const AppsManager = {
   addApp(raw) {
-    appsStore.push(new ParseApp(false, raw));
-    console.log("new regular app from appsmanager");
-  },
-
-  addReadOnlyApp(raw) {
-		appsStore.push(new ParseApp(true, raw));
-		console.log("new read-only app from appsmanager");
+    appsStore.push(new ParseApp(raw));
 		console.log(appsStore);
   },
 
 	readOnlyApps() {
 		let readOnlyAppsStore = appsStore.filter(function(app) {
 			return app.readOnly === true;
-		}).sort(function(app1, app2) {
+		})
+		readOnlyAppsStore.sort(function(app1, app2) {
 			return app1.name.localeCompare(app2.name);
 		});
 		return readOnlyAppsStore;
@@ -36,12 +31,13 @@ const AppsManager = {
   apps() {
 		let fullAccessAppsStore = appsStore.filter(function(app) {
 			return app.readOnly === false;
-		}).sort(function(app1, app2) {
+		})
+		fullAccessAppsStore.sort(function(app1, app2) {
       return app1.name.localeCompare(app2.name);
     });
     return fullAccessAppsStore;
   },
-	
+
 	allApps() {
 		appsStore.sort(function(app1, app2) {
       return app1.name.localeCompare(app2.name);
@@ -67,7 +63,7 @@ const AppsManager = {
       payload.parse_app.connectionString = connectionURL;
     }
     return post('/apps', payload).then((response) => {
-      let newApp = new ParseApp(false, response.app);
+      let newApp = new ParseApp(response.app);
       appsStore.push(newApp);
       return newApp;
     });
@@ -121,7 +117,7 @@ const AppsManager = {
       if (!appsStore) {
         AppsManager.seed();
       }
-      appsStore.push(new ParseApp(false, app));
+      appsStore.push(new ParseApp(app));
     });
     return request;
   },
