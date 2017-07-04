@@ -118,8 +118,8 @@ class Dashboard extends React.Component {
     setBasePath(props.path);
   }
 
-  
-  
+
+
   componentDidMount() {
     get('/parse-dashboard-config.json').then(({ apps, readOnlyApps, newFeaturesInLatestVersion = [] }) => {
       this.setState({ newFeaturesInLatestVersion });
@@ -138,7 +138,6 @@ class Dashboard extends React.Component {
 						{},
 						{ useMasterKey: true }
 					).then(serverInfo => {
-						console.log(serverInfo);
 						app.serverInfo = serverInfo;
 						return app;
 					}, error => {
@@ -166,12 +165,10 @@ class Dashboard extends React.Component {
 						}
 					});
 				}
-			});
-			
+			});	
 			return Parse.Promise.when(appInfoPromises);
     }).then(function(resolvedApps) {	
       resolvedApps.forEach(app => {
-				console.log('app', app);
         AppsManager.addApp(app);
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
@@ -198,8 +195,7 @@ class Dashboard extends React.Component {
 						'serverInfo',
 						{},
 						{ useMasterKey: true }
-					).then(serverInfo => {
-						console.log(serverInfo);
+					).then(serverInfo => 
 						app.serverInfo = serverInfo;
 						return app;
 					}, error => {
@@ -232,7 +228,6 @@ class Dashboard extends React.Component {
 			return Parse.Promise.when(readOnlyAppInfoPromises);
     }).then(function(resolvedApps) {	
       resolvedApps.forEach(app => {
-				console.log('readonlyapp', app);
         AppsManager.addApp(app);
       });
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
@@ -243,7 +238,7 @@ class Dashboard extends React.Component {
       });
     });
   }
-	
+
   render() {
     if (this.state.configLoadingState === AsyncStatus.PROGRESS) {
       return <div className={center}><Loader/></div>;

@@ -15,7 +15,6 @@ let readOnlyAppsStore = [];
 const AppsManager = {
   addApp(raw) {
     appsStore.push(new ParseApp(raw));
-		console.log(appsStore);
   },
 
 	readOnlyApps() {
@@ -37,7 +36,7 @@ const AppsManager = {
     });
     return fullAccessAppsStore;
   },
-	
+
 	allApps() {
 		appsStore.sort(function(app1, app2) {
       return app1.name.localeCompare(app2.name);
