@@ -168,7 +168,23 @@ class Dashboard extends React.Component {
 				}
 			});
 			
-			let readOnlyAppInfoPromises = readOnlyApps.map(app => {
+			return Parse.Promise.when(appInfoPromises);
+    }).then(function(resolvedApps) {	
+      resolvedApps.forEach(app => {
+				console.log('app', app);
+        AppsManager.addApp(app);
+      });
+      this.setState({ configLoadingState: AsyncStatus.SUCCESS });
+    }.bind(this)).fail(({ error }) => {
+      this.setState({
+        configLoadingError: error,
+        configLoadingState: AsyncStatus.FAILED
+      });
+    });
+		
+		get('/parse-dashboard-config.json').then(({ apps, readOnlyApps, newFeaturesInLatestVersion = [] }) => {
+      this.setState({ newFeaturesInLatestVersion });
+      let readOnlyAppInfoPromises = readOnlyApps.map(app => {
 				app.readOnly = true;
 				if (app.serverURL.startsWith('https://api.parse.com/1')) {
 					//api.parse.com doesn't have feature availability endpoint, fortunately we know which features
@@ -212,18 +228,13 @@ class Dashboard extends React.Component {
 					});
 				}
 			});
-
-			var allAppInfoPromises = [appInfoPromises, readOnlyAppInfoPromises];
-			return Parse.Promise.when(allAppInfoPromises);
+			
+			return Parse.Promise.when(readOnlyAppInfoPromises);
     }).then(function(resolvedApps) {	
-      resolvedApps[0].forEach(app => {
-				console.log('app', app);
+      resolvedApps.forEach(app => {
+				console.log('readonlyapp', app);
         AppsManager.addApp(app);
       });
-			resolvedApps[1].forEach(app => {
-				console.log('readonlyapp', app);
-				AppsManager.addApp(app);
-			});
       this.setState({ configLoadingState: AsyncStatus.SUCCESS });
     }.bind(this)).fail(({ error }) => {
       this.setState({
