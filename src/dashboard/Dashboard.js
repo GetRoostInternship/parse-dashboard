@@ -195,7 +195,7 @@ class Dashboard extends React.Component {
 						'serverInfo',
 						{},
 						{ useMasterKey: true }
-					).then(serverInfo => 
+					).then(serverInfo => {
 						app.serverInfo = serverInfo;
 						return app;
 					}, error => {
