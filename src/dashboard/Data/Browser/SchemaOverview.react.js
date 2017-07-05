@@ -23,13 +23,7 @@ export default class Browser extends DashboardView {
     super();
     this.section = 'Core';
     this.subsection = 'Browser'
-    if(!this.context.currentApp.readOnly){
     this.action = new SidebarAction('Create a class', () => this.setState({ showCreateClassDialog: true }));
-  }
-  else {
-    this.action = new SideBarAction('', function(){});
-  }
-
     this.state = {
       counts: {},
     };
@@ -77,6 +71,3 @@ export default class Browser extends DashboardView {
     );
   }
 }
-SchemaOverview.contextTypes = {
-  currentApp: React.PropTypes.instanceOf(ParseApp)
-};
