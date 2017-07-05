@@ -62,6 +62,8 @@ export default class Webhooks extends TableView {
   }
 
   renderToolbar() {
+    if(!this.context.currentApp.readOnly)
+    {
     return <Toolbar
       section='Integrations'
       subsection='Webhooks'>
@@ -70,6 +72,13 @@ export default class Webhooks extends TableView {
         value='Create a Webhook'
         onClick={this.openNewWebhookModal.bind(this)}/>
     </Toolbar>;
+  }
+  else {
+    return <Toolbar
+      section='Integrations'
+      subsection='Webhooks'>
+    </Toolbar>;
+  }
   }
 
   clearFields() {
@@ -261,6 +270,8 @@ export default class Webhooks extends TableView {
         deleteColumnContents = <TableWarning text='Overridden' />;
       }
     }
+    if(!this.context.currentApp.readOnly)
+    {
     return <tr
       key={JSON.stringify(hook)}>
       <td style={rowStyle} onClick={showEdit} width={'15%'}>{hook.functionName ? 'Function' : 'Trigger'}</td>
@@ -269,6 +280,14 @@ export default class Webhooks extends TableView {
       <td style={rowStyle} onClick={showEdit} width={'40%'}>{hook.url || 'Cloud Code'}</td>
       <td width={'10%'}>{deleteColumnContents}</td>
     </tr>;
+  }
+  return <tr
+    key={JSON.stringify(hook)}>
+    <td style={rowStyle} width={'15%'}>{hook.functionName ? 'Function' : 'Trigger'}</td>
+    <td style={rowStyle} width={'15%'}>{hook.className || ''}</td>
+    <td style={rowStyle} width={'20%'}>{hook.functionName || hook.triggerName}</td>
+    <td style={rowStyle} width={'40%'}>{hook.url || 'Cloud Code'}</td>
+  </tr>;
   }
 
   renderHeaders() {
@@ -282,12 +301,23 @@ export default class Webhooks extends TableView {
   }
 
   renderEmpty() {
+    if(!this.context.currentApp.readOnly)
+    {
     return <EmptyState
       title='Webhooks'
       description={<span>Use webhooks to run Cloud Code or connect Parse to your own server. <a href={getSiteDomain() + '/docs/cloudcode/guide'} target='_blank'>Learn more</a>.</span>}
       icon='gears'
       cta='Create a Webhook'
       action={this.openNewWebhookModal.bind(this)} />
+    }
+    else {
+      return <EmptyState
+        title='Webhooks'
+        description={<span>Use webhooks to run Cloud Code or connect Parse to your own server. <a href={getSiteDomain() + '/docs/cloudcode/guide'} target='_blank'>Learn more</a>.</span>}
+        icon='gears'
+        cta=''
+        action={function(){}} />
+    }
   }
 
   tableData() {

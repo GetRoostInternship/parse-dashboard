@@ -12,6 +12,7 @@ import EmptyState      from 'components/EmptyState/EmptyState.react';
 import Icon            from 'components/Icon/Icon.react';
 import { isDate }      from 'lib/DateUtils';
 import Parse           from 'parse';
+import ParseApp        from 'lib/ParseApp';
 import React           from 'react';
 import SidebarAction   from 'components/Sidebar/SidebarAction';
 import subscribeTo     from 'lib/subscribeTo';
@@ -33,7 +34,6 @@ class Config extends TableView {
       modalValue: ''
     };
   }
-
   componentWillMount() {
     this.props.config.dispatch(ActionTypes.FETCH);
   }
@@ -45,6 +45,7 @@ class Config extends TableView {
   }
 
   renderToolbar() {
+    if(!this.context.currentApp.readOnly){
     return (
       <Toolbar
         section='Core'
@@ -52,6 +53,15 @@ class Config extends TableView {
         <Button color='white' value='Create a parameter' onClick={this.createParameter.bind(this)} />
       </Toolbar>
     );
+  }
+  else {
+    return (
+      <Toolbar
+        section='Core'
+        subsection='Config'>
+      </Toolbar>
+    );
+  }
   }
 
   renderExtras() {
@@ -113,7 +123,8 @@ class Config extends TableView {
       }
       openModal()
     }
-
+    if(!this.context.currentApp.readOnly)
+    {
     return (
       <tr key={data.param}>
         <td style={columnStyle} onClick={openModal}>{data.param}</td>
@@ -127,6 +138,16 @@ class Config extends TableView {
       </tr>
     );
   }
+  else {
+    return (
+      <tr key={data.param}>
+        <td style={columnStyle}>{data.param}</td>
+        <td style={columnStyle}>{type}</td>
+        <td style={columnStyle}>{value}</td>
+      </tr>
+    );
+  }
+  }
 
   renderHeaders() {
     return [
@@ -137,6 +158,8 @@ class Config extends TableView {
   }
 
   renderEmpty() {
+    if(!this.context.currentApp.readOnly)
+    {
     return (
       <EmptyState
         title='Dynamically configure your app'
@@ -145,6 +168,17 @@ class Config extends TableView {
         cta='Create your first parameter'
         action={this.createParameter.bind(this)} />
     );
+  }
+  else {
+    return (
+      <EmptyState
+        title='Dynamically configure your app'
+        description='Set up parameters that let you control the appearance or behavior of your app.'
+        icon='gears'
+        cta=''
+        action={function(){}} />
+    );
+  }
   }
 
   tableData() {
@@ -196,5 +230,4 @@ class Config extends TableView {
     });
   }
 }
-
 export default Config;
