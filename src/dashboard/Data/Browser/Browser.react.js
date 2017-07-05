@@ -100,7 +100,6 @@ export default class Browser extends DashboardView {
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
-    console.log("readonly", this.context.currentApp.readOnly);
   }
 
   componentWillMount() {
