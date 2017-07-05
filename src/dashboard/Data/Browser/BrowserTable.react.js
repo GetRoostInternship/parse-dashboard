@@ -269,7 +269,8 @@ export default class BrowserTable extends React.Component {
         }
       }
 
-      if (this.props.newObject || this.props.data.length > 0&&this.context.currentApp.readOnly) {
+      if (this.props.newObject || this.props.data.length > 0)
+       {if(this.context.currentApp.readOnly){
         table = (
           <div className={styles.table} ref='table'>
             <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
@@ -278,7 +279,7 @@ export default class BrowserTable extends React.Component {
           </div>
         );
       }
-      else if (this.props.newObject || this.props.data.length > 0) {
+      else {
         table = (
           <div className={styles.table} ref='table'>
             <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
@@ -289,6 +290,7 @@ export default class BrowserTable extends React.Component {
             {editor}
           </div>
         );
+      }
       }
       else if(this.context.currentApp.readOnly)
       {
