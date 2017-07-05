@@ -201,6 +201,7 @@ export default class DataBrowser extends React.Component {
           setCurrent={this.setCurrent.bind(this)}
           {...other} />
         <BrowserToolbar
+        readOnly = {this.context.currentApp.readOnly}
           hidePerms={className === '_Installation'}
           className={SpecialClasses[className] || className}
           classNameForPermissionsEditor={className}

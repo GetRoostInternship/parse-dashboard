@@ -8,14 +8,14 @@
 import BrowserCell            from 'components/BrowserCell/BrowserCell.react';
 import * as browserUtils      from 'lib/browserUtils';
 import DataBrowserHeaderBar   from 'components/DataBrowserHeaderBar/DataBrowserHeaderBar.react';
-//import Editor                 from 'dashboard/Data/Browser/Editor.react';
+import Editor                 from 'dashboard/Data/Browser/Editor.react';
 import EmptyState             from 'components/EmptyState/EmptyState.react';
 import Icon                   from 'components/Icon/Icon.react';
 import Parse                  from 'parse';
 import React                  from 'react';
 import styles                 from 'dashboard/Data/Browser/Browser.scss';
 import Button                 from 'components/Button/Button.react';
-
+import ParseApp               from 'lib/ParseApp';
 const MAX_ROWS = 60; // Number of rows to render at any time
 const ROW_HEIGHT = 31;
 
@@ -212,12 +212,73 @@ export default class BrowserTable extends React.Component {
           for (let i = 0; i < this.props.current.col; i++) {
             wrapLeft += this.props.order[i].width;
           }
+
+          editor = (
+            <Editor
+              top={wrapTop}
+              left={wrapLeft}
+              type={type}
+              targetClass={targetClass}
+              value={value}
+              readonly={readonly}
+              width={width}
+              onCommit={(newValue) => {
+                if (newValue !== value) {
+                  this.props.updateRow(
+                    this.props.current.row,
+                    name,
+                    newValue
+                  );
+                }
+                this.props.setEditing(false);
+              }} />
+          );
         }
       }
 
       let addRow = null;
+      if (!this.props.newObject) {
+        if (this.props.relation) {
+          addRow = (
+            <div className={styles.addRow}>
+              <Button
+                onClick={this.props.onAddRow}
+                primary
+                value={`Create a ${this.props.relation.targetClassName} and attach`}
+              />
+              {' '}
+              <Button
+                onClick={this.props.onAttachRows}
+                primary
+                value={`Attach existing rows from ${this.props.relation.targetClassName}`}
+              />
+            </div>
+          );
+        } else {
+          addRow = (
+            <div className={styles.addRow}>
+              <a title='Add Row' onClick={this.props.onAddRow}>
+                <Icon
+                  name='plus-outline'
+                  width={14}
+                  height={14}
+                />
+              </a>
+            </div>
+          );
+        }
+      }
 
-      if (this.props.newObject || this.props.data.length > 0) {
+      if (this.props.newObject || this.props.data.length > 0&&this.context.currentApp.readOnly) {
+        table = (
+          <div className={styles.table} ref='table'>
+            <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
+            {rows}
+            <div style={{ height: Math.max(0, (this.props.data.length - this.state.offset - MAX_ROWS) * ROW_HEIGHT) }} />
+          </div>
+        );
+      }
+      else if (this.props.newObject || this.props.data.length > 0) {
         table = (
           <div className={styles.table} ref='table'>
             <div style={{ height: Math.max(0, this.state.offset * ROW_HEIGHT) }} />
@@ -228,7 +289,29 @@ export default class BrowserTable extends React.Component {
             {editor}
           </div>
         );
-      } else {
+      }
+      else if(this.context.currentApp.readOnly)
+      {
+        table = (
+          <div className={styles.table} ref='table'>
+            <div className={styles.empty}>
+              {this.props.relation ?
+                <EmptyState
+                  title='No data to display'
+                  description='This relation has no rows.'
+                  cta=''
+                  icon='files-solid' /> :
+                <EmptyState
+                  title='No data to display'
+                  description=''
+                  icon='files-solid'
+                  cta='' />
+              }
+            </div>
+          </div>
+        );
+      }
+      else {
         table = (
           <div className={styles.table} ref='table'>
             <div className={styles.empty}>
@@ -270,3 +353,6 @@ export default class BrowserTable extends React.Component {
     );
   }
 }
+BrowserTable.contextTypes = {
+  currentApp: React.PropTypes.instanceOf(ParseApp)
+};
