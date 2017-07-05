@@ -38,6 +38,7 @@ export default class Browser extends DashboardView {
     super();
     this.section = 'Core';
     this.subsection = 'Browser'
+
     this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     this.noteTimeout = null;
 
@@ -99,6 +100,7 @@ export default class Browser extends DashboardView {
     this.createClass = this.createClass.bind(this);
     this.addColumn = this.addColumn.bind(this);
     this.removeColumn = this.removeColumn.bind(this);
+    console.log("readonly", this.context.currentApp.readOnly);
   }
 
   componentWillMount() {
