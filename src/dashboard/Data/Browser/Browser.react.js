@@ -34,12 +34,17 @@ import * as ColumnPreferences             from 'lib/ColumnPreferences';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
-  constructor() {
+  constructor(props, context) {
     super();
     this.section = 'Core';
-    this.subsection = 'Browser'
-
-    this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
+    this.subsection = 'Browser';
+    if(!context.currentApp.readOnly)
+    {
+      this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
+    }
+    else {
+      this.action = null;
+    }
     this.noteTimeout = null;
 
     this.state = {
