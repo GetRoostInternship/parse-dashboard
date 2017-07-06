@@ -49,10 +49,11 @@ const Sidebar = ({
   }
 
   const apps = [].concat(AppsManager.apps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
+	const readOnlyApps = [].concat(AppsManager.readOnlyApps()).sort((a, b) => (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)));
 
   return <div className={styles.sidebar}>
     <SidebarHeader />
-    {appSelector ? <AppsSelector apps={apps} /> : null}
+    {appSelector ? <AppsSelector apps={apps} readOnlyApps={readOnlyApps} /> : null}
 
     <div className={styles.content}>
       {sections.map(({

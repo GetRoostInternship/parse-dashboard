@@ -71,6 +71,7 @@ export default class AppsSelector extends React.Component {
         <Popover fixed={true} position={position} onExternalClick={this.close.bind(this)}>
           <AppsMenu
             apps={this.props.apps}
+						readOnlyApps={this.props.readOnlyApps}
             current={this.context.currentApp}
             height={height}
             onSelect={this.select.bind(this)} />
