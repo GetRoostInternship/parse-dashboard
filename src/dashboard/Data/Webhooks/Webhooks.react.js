@@ -32,11 +32,17 @@ let TableWarning = ({ text }) => <div>
 @subscribeTo('Webhooks', 'webhooks')
 @subscribeTo('Schema', 'schema')
 export default class Webhooks extends TableView {
-  constructor() {
+  constructor(props, context) {
     super();
     this.section = 'Core';
     this.subsection = 'Webhooks';
-    this.action = new SidebarAction('Create a webhook', this.openNewWebhookModal.bind(this));
+    if(!context.currentApp.readOnly)
+    {
+      this.action = new SidebarAction('Create a webhook', this.openNewWebhookModal.bind(this));
+    }
+    else {
+      this.action = null;
+    }
     this.state = {
       showNewWebhookModal: false,
       showEditWebhookModal: false,

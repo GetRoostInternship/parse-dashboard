@@ -22,11 +22,17 @@ import Toolbar         from 'components/Toolbar/Toolbar.react';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
-  constructor() {
+  constructor(props, context) {
     super();
     this.section = 'Core';
     this.subsection = 'Config';
-    this.action = new SidebarAction('Create a parameter', this.createParameter.bind(this));
+    if(!context.currentApp.readOnly)
+    {
+      this.action = new SidebarAction('Create a parameter', this.createParameter.bind(this));
+    }
+    else {
+      this.action = null;
+    }
     this.state = {
       modalOpen: false,
       modalParam: '',
