@@ -40,7 +40,7 @@ export default class Browser extends DashboardView {
     this.subsection = 'Browser';
     if(!context.currentApp.readOnly)
     {
-      this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
+      this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this)); 
     }
     else {
       this.action = null;
