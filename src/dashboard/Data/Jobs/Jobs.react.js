@@ -61,11 +61,11 @@ function scheduleString(data) {
 // TODO: create scrollable view component that handles lazy fetch container on scroll
 @subscribeTo('Jobs', 'jobs')
 export default class Jobs extends TableView {
-  constructor() {
-    super();
+  constructor(props, context) {
+    super(props, context);
     this.section = 'Core';
     this.subsection = 'Jobs';
-
+    this.appReadOnly = context.currentApp.readOnly;
     this.state = {
       toDelete: null,
       jobStatus: undefined,
@@ -79,7 +79,7 @@ export default class Jobs extends TableView {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.availableJobs) {
-      if (nextProps.availableJobs.length > 0) {
+      if (nextProps.availableJobs.length > 0&&!this.appReadOnly) {
         this.action = new SidebarAction('Schedule a job', this.navigateToNew.bind(this));
         return;
       }
@@ -117,6 +117,7 @@ export default class Jobs extends TableView {
   }
 
   renderRow(data) {
+    if(!this.appReadOnly){
     if (this.props.params.section === 'all') {
       return (
         <tr key={data.jobName}>
@@ -156,8 +157,42 @@ export default class Jobs extends TableView {
       );
     }
   }
+  else {
+    if (this.props.params.section === 'all') {
+      return (
+        <tr key={data.jobName}>
+          <td style={{width: '60%'}}>{data.jobName}</td>
+        </tr>
+      );
+    } else if (this.props.params.section === 'scheduled') {
+      return (
+        <tr key={data.objectId}>
+          <td style={{width: '20%'}}>{data.description}</td>
+          <td style={{width: '20%'}}>{data.jobName}</td>
+          <td style={{width: '20%'}}>{scheduleString(data)}</td>
+        </tr>
+      );
+    } else if (this.props.params.section === 'status') {
+      return (
+        <tr key={data.objectId}>
+          <td style={{width: '20%'}}>{data.jobName}</td>
+          <td style={{width: '20%'}}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
+          <td style={{width: '40%'}}>
+            <div style={{ fontSize: 12, whiteSpace: 'normal', lineHeight: '16px' }}>
+              {data.message}
+            </div>
+          </td>
+          <td style={{width: '20%'}}>
+            <StatusIndicator text={data.status} color={statusColors[data.status]} />
+          </td>
+        </tr>
+      );
+    }
+  }
+  }
 
   renderHeaders() {
+    if(!this.appReadOnly){
     if (this.props.params.section === 'all') {
       return [
         <TableHeader key='name' width={60}>Name</TableHeader>,
@@ -178,6 +213,27 @@ export default class Jobs extends TableView {
         <TableHeader key='status' width={20}>Status</TableHeader>,
       ];
     }
+  }
+  else {
+    if (this.props.params.section === 'all') {
+      return [
+        <TableHeader key='name' width={60}>Name</TableHeader>,
+      ];
+    } else if (this.props.params.section === 'scheduled') {
+      return [
+        <TableHeader key='name' width={20}>Name</TableHeader>,
+        <TableHeader key='func' width={20}>Function</TableHeader>,
+        <TableHeader key='schedule' width={20}>Schedule (UTC)</TableHeader>,
+      ];
+    } else {
+      return [
+        <TableHeader key='func' width={20}>Function</TableHeader>,
+        <TableHeader key='started' width={20}>Started At (UTC)</TableHeader>,
+        <TableHeader key='message' width={40}>Message</TableHeader>,
+        <TableHeader key='status' width={20}>Status</TableHeader>,
+      ];
+    }
+  }
   }
 
   renderEmpty() {
@@ -258,7 +314,7 @@ export default class Jobs extends TableView {
             <Icon name='refresh-solid' width={14} height={14} />
             <span>Refresh</span>
           </a>
-          {this.props.availableJobs && this.props.availableJobs.length > 0 ?
+          {this.props.availableJobs && this.props.availableJobs.length > 0 && !this.appReadOnly?
             <Button color='white' value='Schedule a job' onClick={this.navigateToNew.bind(this)} /> : null}
         </Toolbar>
       );
