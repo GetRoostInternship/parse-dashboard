@@ -48,7 +48,6 @@ export default class SecurityDialog extends React.Component {
   render() {
     let dialog = null;
     let parseServerSupportsPointerPermissions = this.context.currentApp.serverInfo.features.schemas.editClassLevelPermissions;
-    console.log("hi" + this.context.currentApp);
     if (this.props.perms && this.state.open&&this.context.currentApp.readOnly == false) {
       dialog = (
         <PermissionsDialog

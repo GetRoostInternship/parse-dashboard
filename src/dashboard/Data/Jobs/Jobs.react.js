@@ -79,7 +79,7 @@ export default class Jobs extends TableView {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.availableJobs) {
-      if (nextProps.availableJobs.length > 0&&!this.appReadOnly) {
+      if (nextProps.availableJobs.length > 0) {
         this.action = new SidebarAction('Schedule a job', this.navigateToNew.bind(this));
         return;
       }

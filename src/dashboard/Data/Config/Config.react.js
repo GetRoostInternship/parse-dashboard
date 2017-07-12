@@ -26,13 +26,7 @@ class Config extends TableView {
     super();
     this.section = 'Core';
     this.subsection = 'Config';
-    if(!context.currentApp.readOnly)
-    {
-      this.action = new SidebarAction('Create a parameter', this.createParameter.bind(this));
-    }
-    else {
-      this.action = null;
-    }
+    this.action = new SidebarAction('Create a parameter', this.createParameter.bind(this));
     this.state = {
       modalOpen: false,
       modalParam: '',

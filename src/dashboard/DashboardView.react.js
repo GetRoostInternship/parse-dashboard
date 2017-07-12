@@ -15,6 +15,7 @@ export default class DashboardView extends React.Component {
 
   /* A DashboardView renders two pieces: the sidebar, and the app itself */
   render() {
+    let nullaction = null;
     let sidebarChildren = null;
     if (typeof this.renderSidebar === 'function') {
       sidebarChildren = this.renderSidebar();
@@ -243,7 +244,17 @@ export default class DashboardView extends React.Component {
       action={this.action}>
       {sidebarChildren}
     </Sidebar>);
-
+    let readOnlySidebar = (
+    <Sidebar
+      sections={appSidebarSections}
+      appSelector={true}
+      section={this.section}
+      subsection={this.subsection}
+      prefix={'/apps/' + appSlug}
+      action={nullaction}>
+      {sidebarChildren}
+    </Sidebar>);
+    if(!this.context.currentApp.readOnly){
     return (
       <div className={styles.dashboard}>
         <div className={styles.content}>
@@ -253,6 +264,18 @@ export default class DashboardView extends React.Component {
         <SidebarToggle />
       </div>
     );
+  }
+  else {
+    return (
+      <div className={styles.dashboard}>
+        <div className={styles.content}>
+          {this.renderContent()}
+        </div>
+        {readOnlySidebar}
+        <SidebarToggle />
+      </div>
+    );
+  }
   }
 }
 

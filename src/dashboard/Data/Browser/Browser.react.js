@@ -38,13 +38,7 @@ export default class Browser extends DashboardView {
     super();
     this.section = 'Core';
     this.subsection = 'Browser';
-    if(!context.currentApp.readOnly)
-    {
-      this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this)); 
-    }
-    else {
-      this.action = null;
-    }
+    this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     this.noteTimeout = null;
 
     this.state = {
@@ -825,6 +819,7 @@ export default class Browser extends DashboardView {
     let classes = this.props.schema.data.get('classes');
     if (classes) {
       if (classes.size === 0) {
+        if(!this.context.currentApp.readOnly){
         browser = (
           <div className={styles.empty}>
             <EmptyState
@@ -835,6 +830,19 @@ export default class Browser extends DashboardView {
               action={this.showCreateClass} />
           </div>
         );
+      }
+      else {
+        browser = (
+          <div className={styles.empty}>
+            <EmptyState
+              title='You have no classes yet'
+              description={'This is where you can view your app\u2019s data'}
+              icon='files-solid'
+              cta=''
+              action={function(){}} />
+          </div>
+        );
+      }
       } else if (className && classes.get(className)) {
         let schema = {};
         classes.get(className).forEach(({ type, targetClass }, col) => {
