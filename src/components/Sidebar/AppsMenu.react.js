@@ -17,7 +17,7 @@ let AppsMenu = ({ apps, readOnlyApps, current, height, onSelect }) => (
     <div className={styles.currentApp} onClick={onSelect.bind(null, current.slug)}>
       {current.name}
     </div>
-    <div className={styles.menuSection}>All Apps</div>
+    <div className={styles.menuSection}>Read and Write Apps</div>
     {apps.map((app) => {
       if (app.slug === current.slug) {
         return null;
