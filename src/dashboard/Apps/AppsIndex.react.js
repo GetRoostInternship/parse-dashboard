@@ -152,6 +152,9 @@ export default class AppsIndex extends React.Component {
             value={this.state.search}
             placeholder='Start typing to filter&hellip;' />
         </div>
+        <div className={styles.header}>
+        Read and Write Apps:
+        </div>
         <ul className={styles.apps}>
           {apps.map(app =>
             app.name.toLowerCase().indexOf(search) > -1 ?
@@ -159,6 +162,7 @@ export default class AppsIndex extends React.Component {
               null
           )}
         </ul>
+
 				<div className={styles.header}>
 				Read Only Apps:
 				</div>
