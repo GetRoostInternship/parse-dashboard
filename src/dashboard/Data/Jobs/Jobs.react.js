@@ -12,6 +12,7 @@ import CategoryList    from 'components/CategoryList/CategoryList.react';
 import EmptyState      from 'components/EmptyState/EmptyState.react';
 import history         from 'dashboard/history';
 import Icon            from 'components/Icon/Icon.react';
+import JobScheduleReminder    from 'dashboard/Data/Jobs/JobScheduleReminder.react';
 import Modal           from 'components/Modal/Modal.react';
 import React           from 'react';
 import ReleaseInfo     from 'components/ReleaseInfo/ReleaseInfo';
@@ -27,7 +28,7 @@ import Toolbar         from 'components/Toolbar/Toolbar.react';
 
 let subsections = {
   all: 'All Jobs',
-  /*scheduled: 'Scheduled Jobs',*/
+  scheduled: 'Scheduled Jobs',
   status: 'Job Status'
 };
 
@@ -109,8 +110,8 @@ export default class Jobs extends TableView {
     let current = this.props.params.section || '';
     return (
       <CategoryList current={current} linkPrefix={'jobs/'} categories={[
-       /* { name: 'Scheduled Jobs', id: 'scheduled' }, */
         { name: 'All Jobs', id: 'all' },
+        { name: 'Scheduled Jobs', id: 'scheduled' },
         { name: 'Job Status', id: 'status' }
       ]} />
     );
@@ -221,9 +222,9 @@ export default class Jobs extends TableView {
       ];
     } else if (this.props.params.section === 'scheduled') {
       return [
-        <TableHeader key='name' width={20}>Name</TableHeader>,
-        <TableHeader key='func' width={20}>Function</TableHeader>,
-        <TableHeader key='schedule' width={20}>Schedule (UTC)</TableHeader>,
+        <TableHeader key='name' width={33}>Name</TableHeader>,
+        <TableHeader key='func' width={33}>Function</TableHeader>,
+        <TableHeader key='schedule' width={33}>Schedule (UTC)</TableHeader>,
       ];
     } else {
       return [
@@ -235,22 +236,56 @@ export default class Jobs extends TableView {
     }
   }
   }
+  renderFooter() {
+       if (this.props.params.section === 'scheduled') {
+         return <JobScheduleReminder />
+       }
 
+       return null;
+     }
   renderEmpty() {
     if (this.props.params.section === 'all') {
+      if(!this.appReadOnly){
       return (
         <EmptyState
           title='Cloud Jobs'
           description='Define Jobs on parse-server with Parse.Cloud.job()'
           icon='cloud-happy' />
       );
-    } else if (this.props.params.section === 'scheduled') {
+    } else{
       return (
         <EmptyState
           title='Cloud Jobs'
-          description='Scheduling jobs is not supported on parse-server'
+          description='No current Jobs'
           icon='cloud-happy' />
       );
+    }
+    } else if (this.props.params.section === 'scheduled') {
+      if(!this.appReadOnly){
+        return (
+          <EmptyState
+            title='Cloud Jobs'
+            description=
+               <div>
+                 <p>{'On this page you can create JobSchedule objects.'}</p>
+                 <br/>
+                  <JobScheduleReminder />
+               </div>
+            icon='cloud-happy' />
+        );
+    } else{
+      return (
+        <EmptyState
+          title='Cloud Jobs'
+          description=
+             <div>
+               <p>{'On this page you can view JobSchedule objects.'}</p>
+               <br/>
+                <JobScheduleReminder />
+             </div>
+          icon='cloud-happy' />
+      );
+    }
     } else {
       return (
         <EmptyState
@@ -281,7 +316,23 @@ export default class Jobs extends TableView {
 
   tableData() {
     let data = undefined;
-    if (this.props.params.section === 'scheduled' || this.props.params.section === 'all' ) {
+    if (this.props.params.section === 'all') {
+      if (this.props.availableJobs) {
+        data = this.props.availableJobs;
+      }
+      if (this.props.jobsInUse) {
+        if (data) {
+          data = data.concat(this.props.jobsInUse);
+        } else {
+          data = this.props.jobsInUse;
+        }
+      }
+      if (data) {
+        data = data.map((jobName) => {
+          return { jobName };
+        });
+      }
+    } else if (this.props.params.section === 'scheduled' ) {
       if (this.props.jobs.data) {
         let jobs = this.props.jobs.data.get('jobs');
         if (jobs) {
