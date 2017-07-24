@@ -11,7 +11,7 @@
     "serverURL": "http://localhost:1338/parse",
     "appId": "test_app2Id",
     "masterKey": "test_masterKey2",
-    "readOnlyMasterKey2": "test_readOnlyMasterKey2",
+    "readOnlyMasterKey": "test_readOnlyMasterKey2",
     "appName": "TestApp2"
   }
 ],
