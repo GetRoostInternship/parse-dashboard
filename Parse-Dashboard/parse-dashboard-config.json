@@ -4,12 +4,14 @@
     "serverURL": "http://localhost:1337/parse",
     "appId": "test_appId",
     "masterKey": "test_masterKey",
+    "readOnlyMasterKey": "test_readOnlyMasterKey",
     "appName": "TestApp"
   },
   {
     "serverURL": "http://localhost:1338/parse",
     "appId": "test_app2Id",
     "masterKey": "test_masterKey2",
+    "readOnlyMasterKey2": "test_readOnlyMasterKey2",
     "appName": "TestApp2"
   }
 ],
