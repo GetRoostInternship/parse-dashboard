@@ -89,7 +89,7 @@ export default class ParseApp {
 
   setParseKeys() {
     Parse.serverURL = this.serverURL;
-    Parse._initialize(this.applicationId, this.javascriptKey, this.masterKey);
+    Parse._initialize(this.applicationId, this.javascriptKey, this.masterKey, this.readOnlyMasterKey);
   }
 
   apiRequest(method, path, params, options) {
@@ -104,7 +104,7 @@ export default class ParseApp {
    */
   getLogs(level, since) {
     let path = 'scriptlog?level=' + encodeURIComponent(level.toLowerCase()) + '&n=100' + (since?'&startDate=' + encodeURIComponent(since.getTime()):'');
-    return this.apiRequest('GET', path, {}, { useMasterKey: true });
+    return this.apiRequest('GET', path, {}, { useMasterKey: true, useReadOnlyMasterKey: true},);
   }
 
   /**
@@ -127,7 +127,7 @@ export default class ParseApp {
         version: fileMetaData.version,
         checksum: fileMetaData.checksum
       }
-      return this.apiRequest('GET', `scripts/${fileName}`, params, { useMasterKey: true });
+      return this.apiRequest('GET', `scripts/${fileName}`, params, { useMasterKey: true, useReadOnlyMasterKey: true });
     }).then((source) => {
       if (this.latestRelease.files) {
         this.latestRelease.files[fileName].source = source;
@@ -146,7 +146,7 @@ export default class ParseApp {
       'GET',
       'releases/latest',
       {},
-      { useMasterKey: true }
+      { useMasterKey: true, useReadOnlyMasterKey: true }
     ).then((release) => {
       this.latestRelease.lastFetched = new Date();
       this.latestRelease.files = null;
@@ -194,7 +194,7 @@ export default class ParseApp {
         return Parse.Promise.as(this.classCounts.counts[className]);
       }
     }
-    let p = new Parse.Query(className).count({ useMasterKey: true });
+    let p = new Parse.Query(className).count({ useMasterKey: true, useReadOnlyMasterKey: true });
     p.then(count => {
       this.classCounts.counts[className] = count;
       this.classCounts.lastFetched[className] = new Date();
@@ -204,7 +204,7 @@ export default class ParseApp {
 
   getRelationCount(relation) {
     this.setParseKeys();
-    let p = relation.query().count({ useMasterKey: true });
+    let p = relation.query().count({ useMasterKey: true, useReadOnlyMasterKey: true });
     return p;
   }
 
@@ -360,13 +360,24 @@ export default class ParseApp {
     });
   }
 
+  resetReadOnlyMasterKey(password) {
+    let path = '/apps/' + this.slug + '/reset_master_key';
+    return AJAX.post(
+      path,
+      { password_confirm_reset_master_key: password }
+    ).then(({ new_key }) => {
+      this.readOnlyMasterKey = new_key;
+      return Parse.Promise.as();
+    });
+  }
+
   clearCollection(className) {
     if (this.serverInfo.parseServerVersion == 'Parse.com') {
       let path = `/apps/${this.slug}/collections/${className}/clear`;
       return AJAX.del(path);
     } else {
       let path = `purge/${className}`;
-      return this.apiRequest('DELETE', path, {}, { useMasterKey: true });
+      return this.apiRequest('DELETE', path, {}, { useMasterKey: true, useReadOnlyMasterKey: true });
     }
   }
 
@@ -393,7 +404,7 @@ export default class ParseApp {
     query.skip(page*limit);
     query.limit(limit);
     query.descending('createdAt');
-    return query.find({ useMasterKey: true });
+    return query.find({ useMasterKey: true, useReadOnlyMasterKey: true });
   }
 
   fetchPushAudienceSizeSuggestion() {
@@ -404,7 +415,7 @@ export default class ParseApp {
   fetchPushDetails(objectId) {
     let query = new Parse.Query('_PushStatus');
     query.equalTo('objectId', objectId);
-    return query.first({ useMasterKey: true });
+    return query.first({ useMasterKey: true, useReadOnlyMasterKey: true });
   }
 
   isLocalizationAvailable() {
@@ -511,7 +522,7 @@ export default class ParseApp {
 
   getAvailableJobs() {
     let path = 'cloud_code/jobs/data';
-    return this.apiRequest('GET', path, {}, { useMasterKey: true });
+    return this.apiRequest('GET', path, {}, { useMasterKey: true, useReadOnlyMasterKey: true });
   }
 
   getJobStatus() {
@@ -521,7 +532,7 @@ export default class ParseApp {
     }
     let query = new Parse.Query('_JobStatus');
     query.descending('createdAt');
-    return query.find({ useMasterKey: true }).then((status) => {
+    return query.find({ useMasterKey: true, useReadOnlyMasterKey: true }).then((status) => {
       status = status.map((jobStatus) => {
         return jobStatus.toJSON();
       });
@@ -543,7 +554,7 @@ export default class ParseApp {
         jobName: job.jobName,
         when: 0
       },
-      { useMasterKey: true }
+      { useMasterKey: true, useReadOnlyMasterKey: true }
     );
   }
 
